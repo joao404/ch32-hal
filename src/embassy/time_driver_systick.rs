@@ -95,8 +95,17 @@ impl SystickDriver {
 
     #[inline]
     fn raw_cnt(&self) -> u64 {
-        let r = crate::pac::SYSTICK;
-        return r.cnt().read();
+        let rb = crate::pac::SYSTICK;
+        // Typical implementation of reading 64-bit value from two 32-bit
+        // self-incrementing registers: H->L->H loop.
+        // See-also: https://github.com/ch32-rs/ch32-hal/issues/4
+        loop {
+            let cnt_high = rb.cnth().read();
+            let cnt_low = rb.cntl().read();
+            if rb.cnth().read() == cnt_high {
+                return (cnt_high as u64) << 32 | cnt_low as u64;
+            }
+        }
     }
 
     fn trigger_alarm(&self, cs: CriticalSection) {
@@ -104,7 +113,6 @@ impl SystickDriver {
         while !self.set_alarm(cs, next) {
             next = self.queue.borrow(cs).borrow_mut().next_expiration(self.now());
         }
-    }
 
     fn set_alarm(&self, cs: CriticalSection, timestamp: u64) -> bool {
         let r = &crate::pac::SYSTICK;
