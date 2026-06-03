@@ -22,7 +22,7 @@ use embedded_graphics::prelude::*;
 use embedded_graphics::primitives::{Line, PrimitiveStyle};
 use embedded_graphics::text::{Alignment, Text};
 use embedded_hal::delay::DelayNs;
-use hal::gpio::{AnyPin, Level, Output, Pin};
+use hal::gpio::{AnyPin, Level, Output};
 use hal::prelude::*;
 use hal::spi::Spi;
 use hal::{peripherals, println, Peri};
@@ -295,7 +295,7 @@ async fn main(spawner: Spawner) -> ! {
     println!("display init ok");
 
     // GPIO, // T1C4
-    spawner.spawn(blink(led.into())).unwrap();
+    spawner.spawn(blink(led.into()).unwrap());
 
     display.clear(Rgb565::BLACK).unwrap();
 

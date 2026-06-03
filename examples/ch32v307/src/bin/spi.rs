@@ -6,7 +6,7 @@
 use ch32_hal::spi;
 use embassy_executor::Spawner;
 use embassy_time::{Duration, Timer};
-use hal::gpio::{AnyPin, Level, Output, Pin};
+use hal::gpio::{AnyPin, Level, Output};
 use hal::println;
 use hal::time::Hertz;
 use hal::Peri;
@@ -30,7 +30,7 @@ async fn main(spawner: Spawner) -> ! {
     let p = hal::init(Default::default());
 
     // GPIO
-    spawner.spawn(blink(p.PA0.into())).unwrap();
+    spawner.spawn(blink(p.PA0.into()).unwrap());
     let (sck, miso, mosi) = (p.PA5, p.PA6, p.PA7);
 
     let mut spi_config = spi::Config::default();

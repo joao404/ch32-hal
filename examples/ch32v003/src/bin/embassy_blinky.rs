@@ -7,7 +7,7 @@ use ch32_hal as hal;
 use hal::Peri;
 use embassy_executor::Spawner;
 use embassy_time::Timer;
-use hal::gpio::{AnyPin, Level, Output, Pin};
+use hal::gpio::{AnyPin, Level, Output};
 use hal::println;
 
 #[embassy_executor::task(pool_size = 2)]
@@ -34,8 +34,8 @@ async fn main(spawner: Spawner) -> ! {
 
     // let mut led = Output::new(p.PC4, Level::Low, Default::default());
 
-    spawner.spawn(blink(p.PD6.into(), 110)).unwrap();
-    spawner.spawn(blink(p.PA2.into(), 270)).unwrap();
+    spawner.spawn(blink(p.PD6.into(), 110).unwrap());
+    spawner.spawn(blink(p.PA2.into(), 270).unwrap());
 
     loop {
         Timer::after_millis(1000).await;

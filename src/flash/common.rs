@@ -119,6 +119,7 @@ pub(super) unsafe fn write_chunk_unlocked(address: u32, chunk: &[u8]) -> Result<
     family::blocking_write(address, unwrap!(chunk.try_into()))
 }
 
+#[allow(unused)]
 pub(super) unsafe fn write_chunk_with_critical_section(address: u32, chunk: &[u8]) -> Result<(), Error> {
     critical_section::with(|_| write_chunk_unlocked(address, chunk))
 }
@@ -161,12 +162,13 @@ pub(super) unsafe fn erase_sector_unlocked(sector: &FlashSector) -> Result<(), E
     family::blocking_erase_sector(sector)
 }
 
+#[allow(unused)]
 pub(super) unsafe fn erase_sector_with_critical_section(sector: &FlashSector) -> Result<(), Error> {
     critical_section::with(|_| erase_sector_unlocked(sector))
 }
 
 pub(super) fn get_sector(address: u32) -> FlashSector {
-    let mut bank_offset = 0;
+    let _bank_offset = 0;
     let index_in_region = (address - FLASH_BASE as u32) / WRITE_SIZE as u32;
     if (address as usize) < (FLASH_BASE + FLASH_SIZE) {
         return FlashSector {
